@@ -17,22 +17,38 @@ Output: ["banana"]
 
 class UncommonWordsFromTwoSentences {
     public String[] uncommonFromSentences(String s1, String s2) {
-        String temp[] = (s1 + " " + s2).split(" ");
-        Arrays.sort(temp);
-        ArrayList<String> result = new ArrayList<>();
-        int i = 0;
-        while (i < temp.length) {
-            int count = 1;
-            while (i < temp.length && (i + 1) < temp.length && temp[i].equals(temp[i+1])) {
-                i++;
+        Map<String, Integer> map = new HashMap<>();
+        int count = 0;
+        String str1[] = s1.split(" ");
+        for (int i = 0; i < str1.length; i++) {
+            if (map.get(str1[i]) == null) {
                 count++;
             }
-            if (count == 1) {
-                result.add(temp[i]);
+            else if (map.get(str1[i]) == 1) {
+                count--;
             }
-            i++;
+            map.put(str1[i], map.get(str1[i]) == null ? 1 : map.get(str1[i]) + 1);
         }
-        Object[] objArr = result.toArray();
-        return Arrays.copyOf(objArr, objArr.length, String[].class);
+        String str2[] = s2.split(" ");
+        for (int i = 0; i < str2.length; i++) {
+            if (map.get(str2[i]) == null) {
+                count++;
+            }
+            else if (map.get(str2[i]) == 1) {
+                count--;
+            }
+            map.put(str2[i], map.get(str2[i]) == null ? 1 : map.get(str2[i]) + 1);
+        }
+        System.out.println(count);
+        String result[] = new String[count];
+        Iterator itr = map.entrySet().iterator();
+        int index = 0;
+        while (itr.hasNext()) {
+            Map.Entry mapElement = (Map.Entry)itr.next();
+            if ((int)mapElement.getValue() == 1) {
+                result[index++] = (String)mapElement.getKey();
+            }
+        }
+        return result;
     }
 }
